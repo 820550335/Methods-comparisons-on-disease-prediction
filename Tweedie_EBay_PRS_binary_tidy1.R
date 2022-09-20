@@ -276,22 +276,13 @@ list1=c(0.5)
 for (i in 1:10) {
 	for (hsq in list1) {
 		logistic=read.table(paste('summary statistics file',sep=''),stringsAsFactors=F,header=TRUE,sep=' ')
-		cc <- fread(paste0(".frq.cc file"),sep=' ')
-		cc <- data.table(cc)
-		set1 <- c()
-		for (j in seq_along(cc$SNP)){
-			if (!(cc$SNP[j] %in% logistic$SNP)){
-				set1 <- c(set1,j)
-			}
-		}
-		cc <- cc[-set1]
 		OR = logistic[,]
 		se = logistic[,]
 		selogor = se/OR
 		zval = log(OR)/selogor
 		logistic$zval <- zval
 		MAF.sim = logistic[,]
-		obj = EBay.PRS.binary(zval, preval = 0.2, caseNo = cc$NCHROBS_A/2, ctrlNo = cc$NCHROBS_U/2, MAF = MAF.sim, nulltype = 0, df = 7, bre = 120)
+		obj = EBay.PRS.binary(zval, preval = 0.2, caseNo = num_cases, ctrlNo = num_controls, MAF = MAF.sim, nulltype = 0, df = 7, bre = 120)
 		#print(obj)
 		logistic$beta <- obj[[2]]
 		write.table(logistic,paste('Tweedie_effsize_rep',i,'_',hsq,'.txt',sep=''),row.names=F,col.names=T,quote=F,sep='\t')
